@@ -1,0 +1,17 @@
+{
+  "sessionId": "rev_1790936285788",
+  "timestamp": "2026-10-02T10:18:05.788Z",
+  "selectedPaperIds": [
+    "may-banking-news-notes"
+  ],
+  "selectedPaperTitles": [
+    "May 2026 Banking & Financial Awareness Master Compendium"
+  ],
+  "totalQuestions": 10,
+  "correctAnswers": 9,
+  "incorrectAnswers": 1,
+  "skippedAnswers": 0,
+  "accuracyPercentage": 90,
+  "mode": "PRACTICE",
+  "timeSpentSeconds": 240
+}

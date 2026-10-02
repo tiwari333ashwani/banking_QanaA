@@ -1,0 +1,21 @@
+{
+  "weekLabel": "Week of 25 Sept",
+  "startDate": "2026-09-25T10:18:05.794Z",
+  "endDate": "2026-10-02T10:18:05.794Z",
+  "totalQuizzesTaken": 1,
+  "totalRevisionSessions": 1,
+  "totalQuestionsPracticed": 28,
+  "averageQuizNetScore": 14.25,
+  "averageAccuracy": 86.7,
+  "totalNegativeMarksIncurred": 0.75,
+  "strongestSection": "Reasoning Ability",
+  "weakestSection": "Quantitative Aptitude",
+  "paperBreakdown": [
+    {
+      "paperTitle": "May 2026 Banking & Financial Awareness Master Compendium",
+      "attemptsThisWeek": 1,
+      "bestScore": 14.25
+    }
+  ],
+  "generatedAt": "2026-10-02T10:18:05.871Z"
+}
