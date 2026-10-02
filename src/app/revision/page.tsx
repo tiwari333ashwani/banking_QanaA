@@ -257,11 +257,16 @@ export default function RevisionPage() {
                           style={{ width: "18px", height: "18px", cursor: "pointer", accentColor: "#8b5cf6" }}
                         />
                         <div>
-                          <div style={{ fontWeight: "600", fontSize: "14px", color: isChecked ? "#ffffff" : "var(--text-primary)" }}>
-                            {paper.title}
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                            <span style={{ fontWeight: "700", fontSize: "14px", color: isChecked ? "#ffffff" : "var(--text-primary)" }}>
+                              {paper.title}
+                            </span>
+                            <span className="badge badge-purple" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "10px" }}>
+                              {paper.hierarchicalName || paper.id}
+                            </span>
                           </div>
-                          <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>
-                            {paper.category} • {paper.totalQuestions} Questions Available
+                          <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "3px" }}>
+                            {paper.category} • {paper.totalQuestions} Questions Available • {paper.periodLabel || "Weekly Series"}
                           </div>
                         </div>
                       </div>
@@ -275,80 +280,121 @@ export default function RevisionPage() {
           </div>
 
           {/* Drill Configuration Settings */}
-          <div className="panel-card" style={{ padding: "24px", marginBottom: "28px" }}>
-            <h3 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "18px" }}>
+          <div className="panel-card" style={{ padding: "26px", marginBottom: "28px" }}>
+            <h3 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "20px" }}>
               Step 2: Configure Revision Parameters
             </h3>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
-              {/* Question Count */}
-              <div>
-                <label style={{ display: "block", fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)", marginBottom: "8px" }}>
-                  Number of Randomized Questions: <strong>{questionCount}</strong>
-                </label>
-                <input
-                  type="range"
-                  min="5"
-                  max="50"
-                  step="5"
-                  value={questionCount}
-                  onChange={(e) => setQuestionCount(parseInt(e.target.value, 10))}
-                  style={{ width: "100%", accentColor: "#8b5cf6", cursor: "pointer" }}
-                />
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                  <span>5 Qs</span>
-                  <span>25 Qs</span>
-                  <span>50 Qs</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
+              {/* Row 1: Question Count Slider & Section Filter */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+                {/* Question Count */}
+                <div style={{
+                  padding: "18px 20px",
+                  backgroundColor: "var(--bg-primary)",
+                  border: "1px solid var(--border-subtle)",
+                  borderRadius: "var(--radius-lg)"
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <label style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)" }}>
+                      Question Pool Size:
+                    </label>
+                    <span className="badge badge-purple" style={{ fontSize: "13px", padding: "4px 12px" }}>
+                      {questionCount} Questions
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="5"
+                    max="50"
+                    step="5"
+                    value={questionCount}
+                    onChange={(e) => setQuestionCount(parseInt(e.target.value, 10))}
+                    style={{ width: "100%", accentColor: "#8b5cf6", cursor: "pointer", height: "6px" }}
+                  />
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>
+                    <span>Quick: 5 Qs</span>
+                    <span>Standard: 25 Qs</span>
+                    <span>Full Drill: 50 Qs</span>
+                  </div>
+                </div>
+
+                {/* Section Filter with Styled Dropdown */}
+                <div style={{
+                  padding: "18px 20px",
+                  backgroundColor: "var(--bg-primary)",
+                  border: "1px solid var(--border-subtle)",
+                  borderRadius: "var(--radius-lg)"
+                }}>
+                  <label style={{ display: "block", fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)", marginBottom: "10px" }}>
+                    Section / Topic Focus:
+                  </label>
+                  <select
+                    className="form-select"
+                    value={sectionFilter}
+                    onChange={(e) => setSectionFilter(e.target.value)}
+                  >
+                    <option value="ALL">All Sections (Entire Pooled Bank)</option>
+                    <option value="Banking">Banking & Financial Awareness</option>
+                    <option value="Quantitative">Quantitative Aptitude Drill</option>
+                    <option value="Reasoning">Reasoning Ability Drill</option>
+                    <option value="English">English Language Drill</option>
+                  </select>
+                  <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>
+                    Filters questions across all currently selected weekly papers.
+                  </div>
                 </div>
               </div>
 
-              {/* Mode Selector */}
-              <div>
-                <label style={{ display: "block", fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)", marginBottom: "8px" }}>
-                  Revision Mode:
+              {/* Row 2: Mode Selector */}
+              <div style={{
+                padding: "18px 20px",
+                backgroundColor: "var(--bg-primary)",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: "var(--radius-lg)"
+              }}>
+                <label style={{ display: "block", fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)", marginBottom: "12px" }}>
+                  Select Practice Mode:
                 </label>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <button
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "12px" }}>
+                  <div
                     onClick={() => setMode("PRACTICE")}
-                    className={`btn btn-sm ${mode === "PRACTICE" ? "btn-primary" : "btn-secondary"}`}
-                    style={{ flex: 1 }}
+                    style={{
+                      padding: "14px 18px",
+                      borderRadius: "var(--radius-md)",
+                      backgroundColor: mode === "PRACTICE" ? "rgba(2, 132, 199, 0.15)" : "var(--bg-secondary)",
+                      border: `1.5px solid ${mode === "PRACTICE" ? "#38bdf8" : "var(--border-subtle)"}`,
+                      cursor: "pointer",
+                      transition: "all 0.15s ease"
+                    }}
                   >
-                    💡 Practice Mode (Instant Answers)
-                  </button>
-                  <button
-                    onClick={() => setMode("SPEED_DRILL")}
-                    className={`btn btn-sm ${mode === "SPEED_DRILL" ? "btn-primary" : "btn-secondary"}`}
-                    style={{ flex: 1 }}
-                  >
-                    ⚡ Speed Drill
-                  </button>
-                </div>
-              </div>
+                    <div style={{ fontWeight: "700", fontSize: "14px", color: mode === "PRACTICE" ? "#38bdf8" : "var(--text-primary)" }}>
+                      💡 Practice Mode (Instant Explanations)
+                    </div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>
+                      Reveals the correct answer, detailed solution, and memory trick right after clicking.
+                    </div>
+                  </div>
 
-              {/* Section Filter */}
-              <div>
-                <label style={{ display: "block", fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)", marginBottom: "8px" }}>
-                  Section / Topic Filter:
-                </label>
-                <select
-                  value={sectionFilter}
-                  onChange={(e) => setSectionFilter(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "9px 12px",
-                    backgroundColor: "var(--bg-primary)",
-                    border: "1px solid var(--border-subtle)",
-                    borderRadius: "var(--radius-md)",
-                    color: "#ffffff",
-                    fontSize: "13px"
-                  }}
-                >
-                  <option value="ALL">All Sections (Entire Pool)</option>
-                  <option value="Banking">Banking & Financial Awareness</option>
-                  <option value="Quantitative">Quantitative Aptitude</option>
-                  <option value="Reasoning">Reasoning Ability</option>
-                  <option value="English">English Language</option>
-                </select>
+                  <div
+                    onClick={() => setMode("SPEED_DRILL")}
+                    style={{
+                      padding: "14px 18px",
+                      borderRadius: "var(--radius-md)",
+                      backgroundColor: mode === "SPEED_DRILL" ? "rgba(245, 158, 11, 0.15)" : "var(--bg-secondary)",
+                      border: `1.5px solid ${mode === "SPEED_DRILL" ? "#f59e0b" : "var(--border-subtle)"}`,
+                      cursor: "pointer",
+                      transition: "all 0.15s ease"
+                    }}
+                  >
+                    <div style={{ fontWeight: "700", fontSize: "14px", color: mode === "SPEED_DRILL" ? "#fbbf24" : "var(--text-primary)" }}>
+                      ⚡ Exam Speed Drill (Timed Simulation)
+                    </div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>
+                      No instant spoilers. Answer continuously and view your accuracy summary at the end.
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

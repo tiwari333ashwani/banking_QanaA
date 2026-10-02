@@ -20,6 +20,8 @@ export interface PaperSummary {
   averageNetScore?: number;
   lastAttemptedAt?: string;
   sections: string[];
+  hierarchicalName?: string;
+  periodLabel?: string;
 }
 
 export interface PaperDetail extends PaperSummary {

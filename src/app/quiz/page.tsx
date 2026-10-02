@@ -259,22 +259,14 @@ function QuizRunner() {
                 Select Question Paper:
               </label>
               <select
+                className="form-select"
                 value={selectedPaperId}
                 onChange={(e) => setSelectedPaperId(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  backgroundColor: "var(--bg-primary)",
-                  border: "1px solid var(--border-subtle)",
-                  borderRadius: "var(--radius-md)",
-                  color: "#ffffff",
-                  fontSize: "14px",
-                  outline: "none"
-                }}
+                style={{ fontSize: "14px", padding: "12px 38px 12px 16px" }}
               >
                 {papers.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.title} ({p.totalQuestions} Questions • {p.timeLimitMinutes} mins)
+                    [{p.hierarchicalName || p.id}] {p.title} ({p.totalQuestions} Qs • {p.timeLimitMinutes} mins)
                   </option>
                 ))}
               </select>

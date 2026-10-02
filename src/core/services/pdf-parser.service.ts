@@ -16,11 +16,89 @@ export interface ParseResult {
 
 export class PDFParserService {
   /**
+   * Helper to parse standardized hierarchical file naming:
+   * e.g. [topic]_[month][year]_week[x].pdf (such as banking_may2026_week1.pdf)
+   */
+  public static parseHierarchicalNaming(fileName: string): {
+    hierarchicalId: string;
+    displayTitle: string;
+    category: import("@/core/entities/paper.entity").ExamCategory;
+    periodLabel: string;
+    hierarchicalName: string;
+  } {
+    const base = fileName.replace(/\.pdf$/i, "").trim();
+    // Pattern: [topic]_[month][year]_week[x] or [topic]-[month][year]-week[x] or [month][year]-week[x]
+    const match = base.match(/^([a-z0-9]+)[_-]([a-z]+)(\d{4})[_-]week(\d+)$/i);
+
+    if (match) {
+      const rawTopic = match[1].toLowerCase();
+      const rawMonth = match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase();
+      const year = match[3];
+      const weekNum = match[4];
+
+      const topicMap: Record<string, { title: string; category: import("@/core/entities/paper.entity").ExamCategory }> = {
+        banking: { title: "Banking Awareness", category: "Banking & Current Affairs" },
+        finance: { title: "Financial & Banking Affairs", category: "Banking & Current Affairs" },
+        ga: { title: "General Awareness", category: "Banking & Current Affairs" },
+        quant: { title: "Quantitative Aptitude Drill", category: "Sectional Drill" },
+        reasoning: { title: "Reasoning Ability Drill", category: "Sectional Drill" },
+        english: { title: "English Language Drill", category: "Sectional Drill" },
+        mock: { title: "SBI PO Full Mock", category: "SBI PO Prelims" },
+      };
+
+      const topicInfo = topicMap[rawTopic] || {
+        title: rawTopic.toUpperCase(),
+        category: "Banking & Current Affairs" as import("@/core/entities/paper.entity").ExamCategory,
+      };
+
+      const hierarchicalName = `${rawTopic}_${rawMonth.toLowerCase()}${year}_week${weekNum}`;
+      const periodLabel = `${rawMonth} ${year} • Week ${weekNum}`;
+      const displayTitle = `${topicInfo.title} — ${rawMonth} ${year} (Week ${weekNum})`;
+
+      return {
+        hierarchicalId: hierarchicalName,
+        displayTitle,
+        category: topicInfo.category,
+        periodLabel,
+        hierarchicalName,
+      };
+    }
+
+    // Secondary pattern: [month][year]-week[x] e.g. may2026-week1
+    const matchMonthWeek = base.match(/^([a-z]+)(\d{4})[_-]week(\d+)$/i);
+    if (matchMonthWeek) {
+      const rawMonth = matchMonthWeek[1].charAt(0).toUpperCase() + matchMonthWeek[1].slice(1).toLowerCase();
+      const year = matchMonthWeek[2];
+      const weekNum = matchMonthWeek[3];
+      const hierarchicalName = `banking_${rawMonth.toLowerCase()}${year}_week${weekNum}`;
+      return {
+        hierarchicalId: hierarchicalName,
+        displayTitle: `Banking Awareness — ${rawMonth} ${year} (Week ${weekNum})`,
+        category: "Banking & Current Affairs",
+        periodLabel: `${rawMonth} ${year} • Week ${weekNum}`,
+        hierarchicalName,
+      };
+    }
+
+    // Fallback
+    const cleanTitle = base.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    const slug = sanitizeSlug(base);
+    return {
+      hierarchicalId: slug,
+      displayTitle: cleanTitle,
+      category: "Banking & Current Affairs",
+      periodLabel: "Custom Date",
+      hierarchicalName: slug,
+    };
+  }
+
+  /**
    * Main entry point to ingest and parse any Banking PDF file from disk
    */
   public async parsePdfFile(filePath: string): Promise<ParseResult> {
     const fileName = path.basename(filePath);
-    const paperId = sanitizeSlug(fileName.replace(/\.pdf$/i, ""));
+    const naming = PDFParserService.parseHierarchicalNaming(fileName);
+    const paperId = naming.hierarchicalId;
 
     try {
       const buffer = await fs.readFile(filePath);
@@ -113,18 +191,20 @@ export class PDFParserService {
       questions.push(this.finalizeQuestion(currentQ, currentOptions, qIndex++, paperId));
     }
 
-    const title = fileName.replace(/\.pdf$/i, "").replace(/[-_]/g, " ");
+    const naming = PDFParserService.parseHierarchicalNaming(fileName);
     return {
       paperSummary: {
         id: paperId,
-        title,
+        title: naming.displayTitle,
         sourceFileName: fileName,
-        category: "SBI PO Prelims",
+        category: naming.category || "SBI PO Prelims",
         totalQuestions: questions.length,
         totalMarks: questions.length,
         timeLimitMinutes: Math.min(60, Math.ceil(questions.length * 0.8)),
         extractedAt: new Date().toISOString(),
         sections: ["Quantitative Aptitude", "Reasoning Ability", "English Language"],
+        hierarchicalName: naming.hierarchicalName,
+        periodLabel: naming.periodLabel,
       },
       questions,
     };
@@ -361,18 +441,20 @@ export class PDFParserService {
       "Trick: 41K complaints, 79% in favour, 18 centres, 50L limit"
     );
 
-    const title = "May 2026 Banking & Financial Awareness Master Compendium";
+    const naming = PDFParserService.parseHierarchicalNaming(fileName);
     return {
       paperSummary: {
         id: paperId,
-        title,
+        title: naming.displayTitle,
         sourceFileName: fileName,
-        category: "Banking & Current Affairs",
+        category: naming.category,
         totalQuestions: rawQuestions.length,
         totalMarks: rawQuestions.length,
         timeLimitMinutes: Math.ceil(rawQuestions.length * 0.75), // 15 mins for 19 questions
         extractedAt: new Date().toISOString(),
         sections: ["Banking & Financial Awareness"],
+        hierarchicalName: naming.hierarchicalName,
+        periodLabel: naming.periodLabel,
       },
       questions: rawQuestions,
     };

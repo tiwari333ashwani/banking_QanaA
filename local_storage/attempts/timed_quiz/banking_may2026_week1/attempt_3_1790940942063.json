@@ -1,0 +1,185 @@
+{
+  "attemptId": "att_may-banking-news-notes_3_1790940942063",
+  "paperId": "banking_may2026_week1",
+  "paperTitle": "Banking Awareness — May 2026 (Week 1)",
+  "attemptNumber": 3,
+  "timestamp": "2026-10-02T11:35:42.063Z",
+  "timeSpentSeconds": 38,
+  "totalQuestions": 19,
+  "attemptedCount": 19,
+  "correctCount": 3,
+  "incorrectCount": 16,
+  "unattemptedCount": 0,
+  "grossMarks": 3,
+  "negativePenalty": 4,
+  "netScore": -1,
+  "totalMarks": 19,
+  "accuracyPercentage": 15.8,
+  "sectionalScores": {
+    "Banking & Financial Awareness": {
+      "sectionName": "Banking & Financial Awareness",
+      "totalQuestions": 19,
+      "attempted": 19,
+      "correct": 3,
+      "incorrect": 16,
+      "grossMarks": 3,
+      "negativePenalty": 4,
+      "netScore": -1,
+      "accuracy": 15.8
+    }
+  },
+  "responses": [
+    {
+      "questionNumber": 1,
+      "selectedOption": "A",
+      "correctOption": "B",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 2,
+      "selectedOption": "A",
+      "correctOption": "C",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 3,
+      "selectedOption": "A",
+      "correctOption": "B",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 4,
+      "selectedOption": "A",
+      "correctOption": "D",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 5,
+      "selectedOption": "A",
+      "correctOption": "C",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 6,
+      "selectedOption": "A",
+      "correctOption": "B",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 7,
+      "selectedOption": "A",
+      "correctOption": "A",
+      "isCorrect": true,
+      "marksAwarded": 1,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 8,
+      "selectedOption": "A",
+      "correctOption": "D",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 9,
+      "selectedOption": "A",
+      "correctOption": "A",
+      "isCorrect": true,
+      "marksAwarded": 1,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 10,
+      "selectedOption": "A",
+      "correctOption": "C",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 11,
+      "selectedOption": "A",
+      "correctOption": "B",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 12,
+      "selectedOption": "A",
+      "correctOption": "E",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 13,
+      "selectedOption": "A",
+      "correctOption": "E",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 14,
+      "selectedOption": "A",
+      "correctOption": "C",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 15,
+      "selectedOption": "A",
+      "correctOption": "B",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 16,
+      "selectedOption": "A",
+      "correctOption": "D",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 17,
+      "selectedOption": "A",
+      "correctOption": "A",
+      "isCorrect": true,
+      "marksAwarded": 1,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 18,
+      "selectedOption": "A",
+      "correctOption": "B",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    },
+    {
+      "questionNumber": 19,
+      "selectedOption": "A",
+      "correctOption": "C",
+      "isCorrect": false,
+      "marksAwarded": -0.25,
+      "status": "ANSWERED"
+    }
+  ]
+}
