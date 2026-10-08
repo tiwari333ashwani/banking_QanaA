@@ -44,14 +44,19 @@ export class QuizService {
         }
         sectionalMap[sec].total += 1;
 
-        const userAns = input.userResponses.find((r) => r.questionNumber === q.questionNumber);
-        const selected = userAns ? userAns.selectedOption : null;
-        const status = userAns ? userAns.status : "SKIPPED";
+        const userAns = input.userResponses.find(
+          (r) =>
+            Number(r.questionNumber) === Number(q.questionNumber) ||
+            String(r.questionNumber) === String(q.questionNumber)
+        );
+        const rawSelected = userAns?.selectedOption ? String(userAns.selectedOption).trim().toUpperCase() : null;
+        const selected = rawSelected && ["A", "B", "C", "D", "E"].includes(rawSelected) ? (rawSelected as OptionKey) : null;
+        const status = selected ? (userAns?.status || "ANSWERED") : "SKIPPED";
 
         if (!selected) {
           unattemptedCount += 1;
           responses.push({
-            questionNumber: q.questionNumber,
+            questionNumber: Number(q.questionNumber),
             selectedOption: null,
             correctOption: q.correctAnswer,
             isCorrect: false,
@@ -65,7 +70,7 @@ export class QuizService {
             correctCount += 1;
             sectionalMap[sec].correct += 1;
             responses.push({
-              questionNumber: q.questionNumber,
+              questionNumber: Number(q.questionNumber),
               selectedOption: selected,
               correctOption: q.correctAnswer,
               isCorrect: true,
@@ -76,7 +81,7 @@ export class QuizService {
             incorrectCount += 1;
             sectionalMap[sec].incorrect += 1;
             responses.push({
-              questionNumber: q.questionNumber,
+              questionNumber: Number(q.questionNumber),
               selectedOption: selected,
               correctOption: q.correctAnswer,
               isCorrect: false,

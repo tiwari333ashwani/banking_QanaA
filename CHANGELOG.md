@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] - 2026-10-08
+
+### Fixed
+- **Quiz Option Selection Persistence & Result Review Fix:**
+  - Resolved issue where selected options were recorded as skipped/unselected upon examination submission.
+  - Added synchronized React refs (`responsesRef`, `statusesRef`, `timeSpentSecondsRef`) in `QuizRunner` to prevent stale closure bugs during countdown timer auto-submission and state transitions.
+  - Synchronized immediate `ANSWERED` palette status upon option selection, keeping the TCS iON question palette and confirmation modal in lockstep with the user's responses.
+  - Implemented type-agnostic question number matching (`String` and `Number`) in both `QuizService` and the client review view to prevent dropped responses caused by type mismatches in serialized JSON payloads.
+  - Enhanced the post-exam detailed solution review screen with an explicit, high-contrast **Your Selection** vs **Correct Key** status banner on every question card, alongside dedicated badges (`[Your Pick]` and `[Key]`).
+  - Added submit confirmation prompt on the final question when clicking `Save & Next >>`.
+
 ## [2.3.0] - 2026-10-02
 
 ### Changed & Fixed

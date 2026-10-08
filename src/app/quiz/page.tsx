@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PaperSummary, PaperDetail } from "@/core/entities/paper.entity";
@@ -25,16 +25,26 @@ function QuizRunner() {
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const [timeSpentSeconds, setTimeSpentSeconds] = useState(0);
 
-  // User responses: questionNumber -> selectedOption
-  const [responses, setResponses] = useState<Record<number, OptionKey | null>>({});
+  // User responses: questionNumber -> selectedOption (supports string or number keys)
+  const [responses, setResponses] = useState<Record<string | number, OptionKey | null>>({});
   // Question statuses: questionNumber -> QuestionStatus
-  const [statuses, setStatuses] = useState<Record<number, QuestionStatus>>({});
+  const [statuses, setStatuses] = useState<Record<string | number, QuestionStatus>>({});
 
   // Submission & Scorecard
   const [submitting, setSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [evaluatedAttempt, setEvaluatedAttempt] = useState<TimedQuizAttempt | null>(null);
   const [solutionFilter, setSolutionFilter] = useState<"ALL" | "CORRECT" | "INCORRECT" | "UNATTEMPTED">("ALL");
+
+  // Keep refs in sync to prevent stale closures during countdown auto-submission
+  const responsesRef = useRef(responses);
+  responsesRef.current = responses;
+  const statusesRef = useRef(statuses);
+  statusesRef.current = statuses;
+  const timeSpentSecondsRef = useRef(timeSpentSeconds);
+  timeSpentSecondsRef.current = timeSpentSeconds;
+  const paperDetailRef = useRef(paperDetail);
+  paperDetailRef.current = paperDetail;
 
   useEffect(() => {
     fetchPapersList();
@@ -51,15 +61,17 @@ function QuizRunner() {
     if (!examActive || evaluatedAttempt) return;
 
     const timer = setInterval(() => {
+      setTimeSpentSeconds((prev) => prev + 1);
       setSecondsRemaining((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          handleSubmitExam();
+          setTimeout(() => {
+            handleSubmitExam();
+          }, 0);
           return 0;
         }
         return prev - 1;
       });
-      setTimeSpentSeconds((prev) => prev + 1);
     }, 1000);
 
     return () => clearInterval(timer);
@@ -97,7 +109,7 @@ function QuizRunner() {
 
   const handleStartExam = () => {
     if (!paperDetail) return;
-    const initialStatuses: Record<number, QuestionStatus> = {};
+    const initialStatuses: Record<string | number, QuestionStatus> = {};
     paperDetail.questions.forEach((q, idx) => {
       initialStatuses[q.questionNumber] = idx === 0 ? "NOT_ANSWERED" : "NOT_VISITED";
     });
@@ -114,13 +126,20 @@ function QuizRunner() {
 
   const handleSelectOption = (optKey: OptionKey) => {
     if (!currentQuestion) return;
-    const qNum = currentQuestion.questionNumber;
+    const qNum = Number(currentQuestion.questionNumber);
     setResponses((prev) => ({ ...prev, [qNum]: optKey }));
+    // Immediately mark status as ANSWERED so palette button and counts reflect choice instantly
+    setStatuses((prev) => ({
+      ...prev,
+      [qNum]: prev[qNum] === "ANSWERED_AND_REVIEW" || prev[qNum] === "MARKED_FOR_REVIEW"
+        ? "ANSWERED_AND_REVIEW"
+        : "ANSWERED",
+    }));
   };
 
   const handleClearResponse = () => {
     if (!currentQuestion) return;
-    const qNum = currentQuestion.questionNumber;
+    const qNum = Number(currentQuestion.questionNumber);
     setResponses((prev) => {
       const copy = { ...prev };
       delete copy[qNum];
@@ -131,28 +150,33 @@ function QuizRunner() {
 
   const handleSaveAndNext = () => {
     if (!currentQuestion || !paperDetail) return;
-    const qNum = currentQuestion.questionNumber;
-    const hasSelection = Boolean(responses[qNum]);
+    const qNum = Number(currentQuestion.questionNumber);
+    const hasSelection = Boolean(responses[qNum] || responses[Number(qNum)] || responses[String(qNum)]);
 
     setStatuses((prev) => ({
       ...prev,
-      [qNum]: hasSelection ? "ANSWERED" : "NOT_ANSWERED",
+      [qNum]: hasSelection
+        ? (prev[qNum] === "ANSWERED_AND_REVIEW" || prev[qNum] === "MARKED_FOR_REVIEW" ? "ANSWERED_AND_REVIEW" : "ANSWERED")
+        : "NOT_ANSWERED",
     }));
 
     if (currentQIndex < paperDetail.questions.length - 1) {
       const nextIdx = currentQIndex + 1;
-      const nextQNum = paperDetail.questions[nextIdx].questionNumber;
+      const nextQNum = Number(paperDetail.questions[nextIdx].questionNumber);
       setCurrentQIndex(nextIdx);
       if (statuses[nextQNum] === "NOT_VISITED") {
         setStatuses((prev) => ({ ...prev, [nextQNum]: "NOT_ANSWERED" }));
       }
+    } else {
+      // On the final question, clicking Save & Next prompts submission summary
+      setShowConfirmModal(true);
     }
   };
 
   const handleMarkForReviewAndNext = () => {
     if (!currentQuestion || !paperDetail) return;
-    const qNum = currentQuestion.questionNumber;
-    const hasSelection = Boolean(responses[qNum]);
+    const qNum = Number(currentQuestion.questionNumber);
+    const hasSelection = Boolean(responses[qNum] || responses[Number(qNum)] || responses[String(qNum)]);
 
     setStatuses((prev) => ({
       ...prev,
@@ -161,17 +185,19 @@ function QuizRunner() {
 
     if (currentQIndex < paperDetail.questions.length - 1) {
       const nextIdx = currentQIndex + 1;
-      const nextQNum = paperDetail.questions[nextIdx].questionNumber;
+      const nextQNum = Number(paperDetail.questions[nextIdx].questionNumber);
       setCurrentQIndex(nextIdx);
       if (statuses[nextQNum] === "NOT_VISITED") {
         setStatuses((prev) => ({ ...prev, [nextQNum]: "NOT_ANSWERED" }));
       }
+    } else {
+      setShowConfirmModal(true);
     }
   };
 
   const jumpToQuestion = (targetIdx: number) => {
     if (!paperDetail) return;
-    const targetQNum = paperDetail.questions[targetIdx].questionNumber;
+    const targetQNum = Number(paperDetail.questions[targetIdx].questionNumber);
     setCurrentQIndex(targetIdx);
     if (statuses[targetQNum] === "NOT_VISITED") {
       setStatuses((prev) => ({ ...prev, [targetQNum]: "NOT_ANSWERED" }));
@@ -179,20 +205,26 @@ function QuizRunner() {
   };
 
   const handleSubmitExam = async () => {
-    if (!paperDetail) return;
+    const paper = paperDetailRef.current || paperDetail;
+    if (!paper) return;
     try {
       setSubmitting(true);
       setShowConfirmModal(false);
 
-      const userResponses = paperDetail.questions.map((q) => {
-        const selected = responses[q.questionNumber] || null;
-        const st = statuses[q.questionNumber];
+      const latestResponses = responsesRef.current;
+      const latestStatuses = statusesRef.current;
+      const timeSpent = timeSpentSecondsRef.current;
+
+      const userResponses = paper.questions.map((q) => {
+        const qNum = Number(q.questionNumber);
+        const selected = latestResponses[qNum] ?? latestResponses[String(qNum)] ?? null;
+        const st = latestStatuses[qNum] ?? latestStatuses[String(qNum)];
         let status: "ANSWERED" | "SKIPPED" | "MARKED_FOR_REVIEW" = "SKIPPED";
         if (selected) {
-          status = st === "ANSWERED_AND_REVIEW" ? "MARKED_FOR_REVIEW" : "ANSWERED";
+          status = st === "ANSWERED_AND_REVIEW" || st === "MARKED_FOR_REVIEW" ? "MARKED_FOR_REVIEW" : "ANSWERED";
         }
         return {
-          questionNumber: q.questionNumber,
+          questionNumber: qNum,
           selectedOption: selected,
           status,
         };
@@ -202,8 +234,8 @@ function QuizRunner() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          paperId: paperDetail.id,
-          timeSpentSeconds,
+          paperId: paper.id,
+          timeSpentSeconds: timeSpent,
           userResponses,
         }),
       });
@@ -223,15 +255,34 @@ function QuizRunner() {
     }
   };
 
-  // Palette counts
-  const answeredCount = Object.values(statuses).filter(
-    (s) => s === "ANSWERED" || s === "ANSWERED_AND_REVIEW"
-  ).length;
+  // Palette & confirmation counts computed accurately from live responses & statuses
+  const answeredCount = paperDetail
+    ? paperDetail.questions.filter((q) => {
+        const qNum = Number(q.questionNumber);
+        return Boolean(responses[qNum] || responses[String(qNum)]);
+      }).length
+    : 0;
+
   const markedReviewCount = Object.values(statuses).filter(
     (s) => s === "MARKED_FOR_REVIEW" || s === "ANSWERED_AND_REVIEW"
   ).length;
-  const notAnsweredCount = Object.values(statuses).filter((s) => s === "NOT_ANSWERED").length;
-  const notVisitedCount = Object.values(statuses).filter((s) => s === "NOT_VISITED").length;
+
+  const notAnsweredCount = paperDetail
+    ? paperDetail.questions.filter((q) => {
+        const qNum = Number(q.questionNumber);
+        const st = statuses[qNum] || statuses[String(qNum)];
+        const hasChoice = Boolean(responses[qNum] || responses[String(qNum)]);
+        return !hasChoice && st === "NOT_ANSWERED";
+      }).length
+    : 0;
+
+  const notVisitedCount = paperDetail
+    ? paperDetail.questions.filter((q) => {
+        const qNum = Number(q.questionNumber);
+        const st = statuses[qNum] || statuses[String(qNum)];
+        return !st || st === "NOT_VISITED";
+      }).length
+    : 0;
 
   return (
     <div className="container" style={{ maxWidth: "1360px" }}>
@@ -419,7 +470,8 @@ function QuizRunner() {
                 {/* 5 Radio Options */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "30px" }}>
                   {currentQuestion.options.map((opt) => {
-                    const isSelected = responses[currentQuestion.questionNumber] === opt.key;
+                    const qNum = Number(currentQuestion.questionNumber);
+                    const isSelected = (responses[qNum] ?? responses[String(qNum)]) === opt.key;
                     return (
                       <div
                         key={opt.key}
@@ -757,13 +809,21 @@ function QuizRunner() {
             {/* Questions List */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {paperDetail.questions.map((q) => {
-                const resp = evaluatedAttempt.responses.find((r) => r.questionNumber === q.questionNumber);
+                const resp = evaluatedAttempt.responses.find(
+                  (r) =>
+                    Number(r.questionNumber) === Number(q.questionNumber) ||
+                    String(r.questionNumber) === String(q.questionNumber)
+                );
                 const isCorrect = resp ? resp.isCorrect : false;
                 const isSkipped = !resp || resp.selectedOption === null;
+                const userPick = resp?.selectedOption ?? null;
 
                 if (solutionFilter === "CORRECT" && !isCorrect) return null;
                 if (solutionFilter === "INCORRECT" && (isCorrect || isSkipped)) return null;
                 if (solutionFilter === "UNATTEMPTED" && !isSkipped) return null;
+
+                const userPickOption = q.options.find((o) => o.key === userPick);
+                const correctOption = q.options.find((o) => o.key === q.correctAnswer);
 
                 return (
                   <div
@@ -784,35 +844,114 @@ function QuizRunner() {
                       </span>
                     </div>
 
+                    {/* Explicit Selection & Answer Banner */}
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                      gap: "10px",
+                      padding: "10px 14px",
+                      backgroundColor: isCorrect
+                        ? "rgba(16, 185, 129, 0.08)"
+                        : isSkipped
+                        ? "rgba(245, 158, 11, 0.08)"
+                        : "rgba(244, 63, 94, 0.08)",
+                      border: `1px solid ${
+                        isCorrect
+                          ? "rgba(16, 185, 129, 0.25)"
+                          : isSkipped
+                          ? "rgba(245, 158, 11, 0.25)"
+                          : "rgba(244, 63, 94, 0.25)"
+                      }`,
+                      borderRadius: "var(--radius-sm)",
+                      fontSize: "13px",
+                      margin: "12px 0"
+                    }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <span style={{ color: "var(--text-muted)", fontSize: "11px", textTransform: "uppercase", fontWeight: "700" }}>
+                          Your Selection:
+                        </span>
+                        {userPick ? (
+                          <strong style={{ color: isCorrect ? "#34d399" : "#fb7185" }}>
+                            Option ({userPick}) {userPickOption?.text ? `— ${userPickOption.text}` : ""}
+                          </strong>
+                        ) : (
+                          <span style={{ color: "#fbbf24", fontWeight: "600" }}>
+                            ⚠️ No Option Selected (Skipped / Unattempted)
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <span style={{ color: "var(--text-muted)", fontSize: "11px", textTransform: "uppercase", fontWeight: "700" }}>
+                          Correct Key:
+                        </span>
+                        <strong style={{ color: "#34d399" }}>
+                          Option ({q.correctAnswer}) {correctOption?.text ? `— ${correctOption.text}` : ""}
+                        </strong>
+                      </div>
+                    </div>
+
                     {/* Options Breakdown */}
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "8px", margin: "14px 0", fontSize: "13px" }}>
                       {q.options.map((opt) => {
-                        const isUserPick = resp?.selectedOption === opt.key;
+                        const isUserPick = userPick === opt.key;
                         const isCorrectKey = q.correctAnswer === opt.key;
                         let border = "1px solid var(--border-subtle)";
                         let color = "var(--text-secondary)";
+                        let bg = "transparent";
                         if (isCorrectKey) {
-                          border = "1px solid #10b981";
+                          border = "1.5px solid #10b981";
                           color = "#34d399";
+                          bg = "rgba(16, 185, 129, 0.05)";
                         } else if (isUserPick && !isCorrectKey) {
-                          border = "1px solid #f43f5e";
+                          border = "1.5px solid #f43f5e";
                           color = "#fb7185";
+                          bg = "rgba(244, 63, 94, 0.05)";
                         }
                         return (
                           <div
                             key={opt.key}
                             style={{
-                              padding: "8px 12px",
+                              padding: "10px 14px",
                               borderRadius: "var(--radius-sm)",
                               border,
                               color,
+                              backgroundColor: bg,
                               display: "flex",
+                              alignItems: "center",
                               gap: "8px"
                             }}
                           >
                             <strong>({opt.key})</strong> {opt.text}
-                            {isUserPick && <span style={{ marginLeft: "auto", fontSize: "11px" }}>[Your Pick]</span>}
-                            {isCorrectKey && <span style={{ marginLeft: "auto", fontSize: "11px" }}>[Key]</span>}
+                            <div style={{ marginLeft: "auto", display: "flex", gap: "6px", alignItems: "center" }}>
+                              {isUserPick && (
+                                <span style={{
+                                  fontSize: "10px",
+                                  fontWeight: "700",
+                                  padding: "2px 6px",
+                                  borderRadius: "3px",
+                                  backgroundColor: isCorrectKey ? "rgba(16, 185, 129, 0.25)" : "rgba(244, 63, 94, 0.25)",
+                                  color: isCorrectKey ? "#34d399" : "#fb7185",
+                                  border: `1px solid ${isCorrectKey ? "#10b981" : "#f43f5e"}`
+                                }}>
+                                  Your Pick
+                                </span>
+                              )}
+                              {isCorrectKey && (
+                                <span style={{
+                                  fontSize: "10px",
+                                  fontWeight: "700",
+                                  padding: "2px 6px",
+                                  borderRadius: "3px",
+                                  backgroundColor: "rgba(16, 185, 129, 0.25)",
+                                  color: "#34d399",
+                                  border: "1px solid #10b981"
+                                }}>
+                                  Key
+                                </span>
+                              )}
+                            </div>
                           </div>
                         );
                       })}
