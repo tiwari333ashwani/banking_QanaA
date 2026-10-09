@@ -20,6 +20,9 @@ yarn-debug.log*
 yarn-error.log*
 local_storage/logs/**/*.jsonl
 !local_storage/logs/**/.gitkeep
+local_storage/reports/weekly/**/*.html
+local_storage/reports/weekly/**/*.json
+!local_storage/reports/weekly/**/.gitkeep
 
 # Environment & Secrets
 .env

@@ -11,13 +11,21 @@ const envSchema = z.object({
   MOCK_EMAIL_DISPATCH: z
     .string()
     .transform((val) => val === "true" || val === "1")
-    .default("true"),
+    .default("false"),
 
+  // Direct Gmail SMTP App Password Configuration
+  SMTP_HOST: z.string().default("smtp.gmail.com"),
+  SMTP_PORT: z.string().default("587"),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASSWORD: z.string().optional(),
+  SMTP_APP_PASSWORD: z.string().optional(),
+
+  // Legacy Gmail API credentials (optional fallback)
   GMAIL_CLIENT_ID: z.string().optional(),
   GMAIL_CLIENT_SECRET: z.string().optional(),
   GMAIL_REFRESH_TOKEN: z.string().optional(),
-  GMAIL_SENDER_EMAIL: z.string().optional().default("no-reply@bankingqa.local"),
-  WEEKLY_REPORT_RECIPIENT_EMAIL: z.string().optional().default("user@bankingqa.local"),
+  GMAIL_SENDER_EMAIL: z.string().optional().default("addytiwari3@gmail.com"),
+  WEEKLY_REPORT_RECIPIENT_EMAIL: z.string().optional().default("addytiwari3@gmail.com,tiwariashwani5534@gmail.com"),
 });
 
 export const env = envSchema.parse({
@@ -27,6 +35,13 @@ export const env = envSchema.parse({
   STORAGE_PROVIDER: process.env.STORAGE_PROVIDER,
   LOCAL_STORAGE_PATH: process.env.LOCAL_STORAGE_PATH,
   MOCK_EMAIL_DISPATCH: process.env.MOCK_EMAIL_DISPATCH,
+
+  SMTP_HOST: process.env.SMTP_HOST || "smtp.gmail.com",
+  SMTP_PORT: process.env.SMTP_PORT || "587",
+  SMTP_USER: process.env.SMTP_USER || process.env.GMAIL_SENDER_EMAIL,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+  SMTP_APP_PASSWORD: process.env.SMTP_APP_PASSWORD,
+
   GMAIL_CLIENT_ID: process.env.GMAIL_CLIENT_ID,
   GMAIL_CLIENT_SECRET: process.env.GMAIL_CLIENT_SECRET,
   GMAIL_REFRESH_TOKEN: process.env.GMAIL_REFRESH_TOKEN,

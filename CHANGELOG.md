@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.2] - 2026-10-10
+
+### Added
+- **Direct Gmail SMTP App Password Email Delivery:**
+  - Integrated `nodemailer` SMTP client connecting directly to `smtp.gmail.com:587` using Google App Password.
+  - Enabled multi-recipient comma-separated distribution list (`addytiwari3@gmail.com`, `tiwariashwani5534@gmail.com`).
+  - Added multi-part HTML report delivery with plain-text fallback, automated message suppression headers, and verified live inbox dispatch.
+
 ## [2.3.1] - 2026-10-08
 
 ### Fixed

@@ -5,7 +5,7 @@ export interface EmailDispatchResult {
   messageId?: string;
   recipient: string;
   dispatchedAt: string;
-  mode: "GMAIL_API" | "LOCAL_MOCK";
+  mode: "SMTP_GMAIL_DIRECT" | "GMAIL_API" | "LOCAL_MOCK";
   savedReportPath?: string;
 }
 
