@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.3] - 2026-10-10
+
+### Added
+- **Automated Sunday 8:00 AM Weekly Report Scheduler & Windows Startup Integration:**
+  - Standalone NodeJS dispatcher `scripts/send-weekly-report.js` with dual-mode execution (online API call or autonomous offline SMTP dispatch from `local_storage`).
+  - Windows Task Scheduler registration scripts (`scripts/schedule-sunday-8am.bat` and `scripts/schedule-sunday-8am.ps1`) targeting every Sunday at 08:00 AM (`0 8 * * 0`).
+  - Windows Startup helper and installer (`scripts/copy-to-startup.bat` and `scripts/copy-to-startup.ps1`) that places a background launcher into `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup` (`shell:startup`) for boot-time registration verification and catch-up.
+  - Comprehensive documentation in `docs/SCHEDULING.md`.
+
 ## [2.3.2] - 2026-10-10
 
 ### Added

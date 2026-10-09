@@ -66,6 +66,7 @@ Open `http://localhost:3000` in your browser.
 
 - [System Architecture](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/ARCHITECTURE.md)
 - [Local Development Guide](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/DEVELOPMENT.md)
+- [Automated Scheduling & Windows Startup](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/SCHEDULING.md)
 - [Gmail API Integration Setup](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/GMAIL_SETUP.md)
 - [API Contracts & Schemas](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/API_CONTRACTS.md)
 - [Changelog](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/CHANGELOG.md)

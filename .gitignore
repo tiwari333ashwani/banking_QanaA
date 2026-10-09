@@ -18,7 +18,7 @@ __pycache__/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-local_storage/logs/**/*.jsonl
+local_storage/logs/**/*
 !local_storage/logs/**/.gitkeep
 local_storage/reports/weekly/**/*.html
 local_storage/reports/weekly/**/*.json
