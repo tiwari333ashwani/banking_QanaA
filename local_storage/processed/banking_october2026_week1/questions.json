@@ -1,0 +1,610 @@
+[
+  {
+    "id": "banking_october2026_week1_q1",
+    "questionNumber": 1,
+    "questionText": "Flipkart has partnered with which bank and payment gateway to launch biometric authentication (fingerprint/Face ID) for card payments?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "HDFC Bank & Razorpay"
+      },
+      {
+        "key": "B",
+        "text": "Axis Bank & PayU"
+      },
+      {
+        "key": "C",
+        "text": "ICICI Bank & Cashfree"
+      },
+      {
+        "key": "D",
+        "text": "State Bank of India & Paytm"
+      },
+      {
+        "key": "E",
+        "text": "Kotak Mahindra Bank & BillDesk"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Flipkart partnered with Axis Bank & PayU to launch biometric authentication for card payments without needing OTPs, aligning with RBI's 2025 Digital Payment Directions.",
+    "memoryTrick": "Flip-Axis-PayU: Biometric card payments",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q2",
+    "questionNumber": 2,
+    "questionText": "Which fintech entity recently secured Reserve Bank of India (RBI) approval for its NBFC application, forming the subsidiary 'MFSPL'?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "BharatPe"
+      },
+      {
+        "key": "B",
+        "text": "Paytm"
+      },
+      {
+        "key": "C",
+        "text": "MobiKwik"
+      },
+      {
+        "key": "D",
+        "text": "PhonePe"
+      },
+      {
+        "key": "E",
+        "text": "CRED"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "RBI approved MobiKwik's NBFC application, enabling entry into regulated lending under subsidiary MobiKwik Financial Services Pvt. Ltd. (MFSPL).",
+    "memoryTrick": "Mobi Kotak — NBFC approval",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q3",
+    "questionNumber": 3,
+    "questionText": "What is the maximum balance limit permitted under the newly launched India Post Payments Bank (IPPB) Self Help Group (SHG) Savings Account?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "₹1,00,000"
+      },
+      {
+        "key": "B",
+        "text": "₹2,00,000"
+      },
+      {
+        "key": "C",
+        "text": "₹3,00,000"
+      },
+      {
+        "key": "D",
+        "text": "₹5,00,000"
+      },
+      {
+        "key": "E",
+        "text": "No upper limit"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "IPPB launched a zero-balance, zero-charge SHG Savings Account with a maximum balance limit of ₹2,00,000 to boost rural women empowerment.",
+    "memoryTrick": "Trick: Zero-Zero, 2 Lakh Limit",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q4",
+    "questionNumber": 4,
+    "questionText": "According to the latest figures, how much did the National Asset Reconstruction Company Ltd (NARCL) recover in FY 2025-26?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "Over ₹2,500 crore"
+      },
+      {
+        "key": "B",
+        "text": "Over ₹3,200 crore"
+      },
+      {
+        "key": "C",
+        "text": "Over ₹3,850 crore"
+      },
+      {
+        "key": "D",
+        "text": "Over ₹4,364 crore"
+      },
+      {
+        "key": "E",
+        "text": "Over ₹5,500 crore"
+      }
+    ],
+    "correctAnswer": "D",
+    "explanation": "NARCL recovered over ₹4,364 crore in FY26 across 23 borrower accounts, taking cumulative recoveries to ₹6,345 crore (~70% of total).",
+    "memoryTrick": "Trick: 33-23-48-2 formula",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q5",
+    "questionNumber": 5,
+    "questionText": "The World Bank has sanctioned a ₹2,800 crore loan for Gurugram Metro Phase II. What percentage of the total project cost does this loan constitute?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "40%"
+      },
+      {
+        "key": "B",
+        "text": "50%"
+      },
+      {
+        "key": "C",
+        "text": "60%"
+      },
+      {
+        "key": "D",
+        "text": "70%"
+      },
+      {
+        "key": "E",
+        "text": "75%"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "The ₹2,800 crore loan provided by World Bank constitutes exactly 60% of the total project cost for Gurugram Metropolitan Rail Limited.",
+    "memoryTrick": "World Bank Gurugram: ₹2,800 Cr = 60% project cost",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q6",
+    "questionNumber": 6,
+    "questionText": "Jio Payments Bank Limited (JPBL) has partnered with which fintech platform as a Business Correspondent (BC) to strengthen last-mile rural digital banking?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "Spice Money"
+      },
+      {
+        "key": "B",
+        "text": "Ezeepay"
+      },
+      {
+        "key": "C",
+        "text": "Fino Payments"
+      },
+      {
+        "key": "D",
+        "text": "Payworld"
+      },
+      {
+        "key": "E",
+        "text": "Nearbuy"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Jio Payments Bank partnered with Ezeepay as Business Correspondent to expand digital banking access through local merchant outlets in rural & semi-urban India.",
+    "memoryTrick": "Jio + Ezeepay BC tie-up",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q7",
+    "questionNumber": 7,
+    "questionText": "World Bank approved a loan of USD 500 million (~₹4,750 crore) to the Bihar State Government for which development programme?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "Bihar Urban Transformation Programme"
+      },
+      {
+        "key": "B",
+        "text": "Bihar Smart Rural Grid Project"
+      },
+      {
+        "key": "C",
+        "text": "Bihar Jal Jeevan Hariyali Mission"
+      },
+      {
+        "key": "D",
+        "text": "Bihar Highway & Logistics Corridor"
+      },
+      {
+        "key": "E",
+        "text": "None of these"
+      }
+    ],
+    "correctAnswer": "A",
+    "explanation": "The USD 500 million loan supports the Bihar Urban Transformation Programme, following plans for 11 new greenfield satellite townships.",
+    "memoryTrick": "USD 500M = 11 Satellite Townships in Bihar",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q8",
+    "questionNumber": 8,
+    "questionText": "Kotak Mahindra Bank Ltd (KMBL) received RBI approval to acquire up to what percentage stake each in AU Small Finance Bank and Federal Bank?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "4.99%"
+      },
+      {
+        "key": "B",
+        "text": "5.00%"
+      },
+      {
+        "key": "C",
+        "text": "7.50%"
+      },
+      {
+        "key": "D",
+        "text": "9.99%"
+      },
+      {
+        "key": "E",
+        "text": "14.99%"
+      }
+    ],
+    "correctAnswer": "D",
+    "explanation": "RBI permitted KMBL to acquire up to 9.99% of paid-up capital/voting rights in both AU Small Finance Bank and Federal Bank.",
+    "memoryTrick": "Trick: Nine-point-nine-nine stake in AU & Federal",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q9",
+    "questionNumber": 9,
+    "questionText": "AU Small Finance Bank launched four new credit cards. Which card is specifically tailored for 'Affluent Achievers' with premium lounge access?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "AU Ananta"
+      },
+      {
+        "key": "B",
+        "text": "AU Laksya"
+      },
+      {
+        "key": "C",
+        "text": "AU Tejas"
+      },
+      {
+        "key": "D",
+        "text": "AU Prathama"
+      },
+      {
+        "key": "E",
+        "text": "AU Vistara"
+      }
+    ],
+    "correctAnswer": "A",
+    "explanation": "AU Ananta targets affluent achievers with premium travel and lounge access. AU Laksya is for Gen Z, AU Tejas for young salaried, and AU Prathama for first-time credit users.",
+    "memoryTrick": "Ananta = Affluent Achievers",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q10",
+    "questionNumber": 10,
+    "questionText": "CTBC Bank recently became the first bank from which country to open a branch at GIFT City, Gujarat?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "South Korea"
+      },
+      {
+        "key": "B",
+        "text": "Japan"
+      },
+      {
+        "key": "C",
+        "text": "Taiwan"
+      },
+      {
+        "key": "D",
+        "text": "Singapore"
+      },
+      {
+        "key": "E",
+        "text": "Malaysia"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "CTBC Bank is the first Taiwanese bank to establish a branch at GIFT City, Gujarat, after receiving IFSCA regulatory approval.",
+    "memoryTrick": "CTBC = Country First (Taiwan)",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q11",
+    "questionNumber": 11,
+    "questionText": "ICICI Bank partnered with Visa to launch India's first USD-denominated debit card for NRI customers from which banking unit?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "Mumbai Overseas Branch"
+      },
+      {
+        "key": "B",
+        "text": "IFSC Banking Unit (IBU) at GIFT City"
+      },
+      {
+        "key": "C",
+        "text": "SEZ Banking Facility, Bengaluru"
+      },
+      {
+        "key": "D",
+        "text": "Kochi Financial Hub"
+      },
+      {
+        "key": "E",
+        "text": "None of these"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Issued from ICICI's IFSC Banking Unit (IBU) at GIFT City on the Visa Infinite platform, linked to USD Global Savings Accounts.",
+    "memoryTrick": "ICICI = Instrument First (USD Card at GIFT City)",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q12",
+    "questionNumber": 12,
+    "questionText": "Assam Chief Minister Himanta Biswa Sarma inaugurated India's 1st AI-powered 'Phygital' banking branch in Guwahati for which bank?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "Equitas SFB"
+      },
+      {
+        "key": "B",
+        "text": "Ujjivan SFB"
+      },
+      {
+        "key": "C",
+        "text": "Jana SFB"
+      },
+      {
+        "key": "D",
+        "text": "ESAF SFB"
+      },
+      {
+        "key": "E",
+        "text": "Slice Small Finance Bank"
+      }
+    ],
+    "correctAnswer": "E",
+    "explanation": "India's first AI-powered 'Phygital' (Physical + Advanced Digital) branch of Slice Small Finance Bank was inaugurated in Guwahati.",
+    "memoryTrick": "Slice SFB = 1st AI Phygital in Guwahati",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q13",
+    "questionNumber": 13,
+    "questionText": "Hyderabad-based Viyona Fintech India Pvt. Ltd. received NPCI certifications for which of the following services?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "UPI Acquirer only"
+      },
+      {
+        "key": "B",
+        "text": "UPI Issuer only"
+      },
+      {
+        "key": "C",
+        "text": "IMPS only"
+      },
+      {
+        "key": "D",
+        "text": "UPI Acquirer & IMPS"
+      },
+      {
+        "key": "E",
+        "text": "UPI Acquirer, UPI Issuer, IMPS, and IBMB"
+      }
+    ],
+    "correctAnswer": "E",
+    "explanation": "NPCI certified Viyona Fintech across 4 major dimensions: UPI Acquirer, UPI Issuer, IMPS, and IBMB (Interoperable Mobile Banking).",
+    "memoryTrick": "Viyona: All 4 NPCI certifications",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q14",
+    "questionNumber": 14,
+    "questionText": "FinBox launched an AI-lending infrastructure platform named 'Atlas'. By how much does Atlas reduce loan processing time?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "From 10 days to 48 hours"
+      },
+      {
+        "key": "B",
+        "text": "From 2 weeks to 72 hours"
+      },
+      {
+        "key": "C",
+        "text": "From ~3 weeks to 24 hours"
+      },
+      {
+        "key": "D",
+        "text": "From 1 month to 4 days"
+      },
+      {
+        "key": "E",
+        "text": "From 5 days to instant approval"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Atlas cuts loan application processing time from roughly 3 weeks to 24 hours, addressing the ~70% drop-off rate in loan applications.",
+    "memoryTrick": "Atlas = 3 weeks down to 24 hours",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q15",
+    "questionNumber": 15,
+    "questionText": "Mahindra & Mahindra signed an MoU with which foreign bank to launch India's first sustainability-linked dealer financing in the automotive sector?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "Standard Chartered"
+      },
+      {
+        "key": "B",
+        "text": "DBS Bank India"
+      },
+      {
+        "key": "C",
+        "text": "Citi Bank"
+      },
+      {
+        "key": "D",
+        "text": "HSBC India"
+      },
+      {
+        "key": "E",
+        "text": "Barclays"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Mahindra partnered with DBS Bank India where loan interest rates for dealers are linked directly to ESG performance and sales metrics.",
+    "memoryTrick": "Mahindra + DBS = 1st ESG dealer financing",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q16",
+    "questionNumber": 16,
+    "questionText": "The Union Cabinet approved a ₹25,000 crore Maritime Development Fund. Which entity was appointed as Fund Manager for the ₹20,000 crore Maritime Investment Fund (MIF)?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "LIC Capital"
+      },
+      {
+        "key": "B",
+        "text": "UTI Asset Management"
+      },
+      {
+        "key": "C",
+        "text": "HDFC Ventures"
+      },
+      {
+        "key": "D",
+        "text": "SBI Ventures"
+      },
+      {
+        "key": "E",
+        "text": "Canara Robeco"
+      }
+    ],
+    "correctAnswer": "D",
+    "explanation": "SBI Ventures was appointed fund manager for the ₹20,000 Cr MIF, registered as a closed-end Category I/II AIF under SEBI with 49% Central Govt contribution.",
+    "memoryTrick": "MIF = SBI Ventures (₹20,000 Cr)",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q17",
+    "questionNumber": 17,
+    "questionText": "PFRDA formed the 'SAARG' committee to examine new asset classes for NPS. Who is appointed as the Chairman of this committee?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "Narayan Ramachandran"
+      },
+      {
+        "key": "B",
+        "text": "S. Ramann"
+      },
+      {
+        "key": "C",
+        "text": "Ajay Banga"
+      },
+      {
+        "key": "D",
+        "text": "P. Santosh"
+      },
+      {
+        "key": "E",
+        "text": "Rajan Bajaj"
+      }
+    ],
+    "correctAnswer": "A",
+    "explanation": "The SAARG (Strategic Asset Allocation & Risk Governance) committee is chaired by Narayan Ramachandran to enhance pension returns for over 2.17 crore NPS subscribers.",
+    "memoryTrick": "SAARG = Narayan Ramachandran",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q18",
+    "questionNumber": 18,
+    "questionText": "The Delhi e-Governance Society signed an MoU with State Bank of India (SBI) to launch which electronic payment solution on its e-procurement portal?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "SBI Collect-Gov"
+      },
+      {
+        "key": "B",
+        "text": "e-Pay"
+      },
+      {
+        "key": "C",
+        "text": "SBI Instant-Treasury"
+      },
+      {
+        "key": "D",
+        "text": "Bharat-eProcure"
+      },
+      {
+        "key": "E",
+        "text": "SBI DigiPay"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Delhi Govt partnered with SBI to deploy 'e-Pay' for faster, paperless, and transparent electronic payments across Delhi Govt's procurement portal.",
+    "memoryTrick": "Delhi Govt + SBI = e-Pay",
+    "sourcePaperId": "banking_october2026_week1"
+  },
+  {
+    "id": "banking_october2026_week1_q19",
+    "questionNumber": 19,
+    "questionText": "As per the IRDAI Insurance Ombudsman FY 2025-26 report, what percentage of resolved complaints were decided in favour of policyholders across the 18 centres?",
+    "section": "Banking & Financial Awareness",
+    "options": [
+      {
+        "key": "A",
+        "text": "62%"
+      },
+      {
+        "key": "B",
+        "text": "71%"
+      },
+      {
+        "key": "C",
+        "text": "~79%"
+      },
+      {
+        "key": "D",
+        "text": "88%"
+      },
+      {
+        "key": "E",
+        "text": "94%"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Out of 41,055 complaints resolved by the 18 Ombudsman centres, ~79% were decided in favour of policyholders for claims up to ₹50 lakh.",
+    "memoryTrick": "Trick: 41K complaints, 79% in favour, 18 centres, 50L limit",
+    "sourcePaperId": "banking_october2026_week1"
+  }
+]

@@ -1,10 +1,14 @@
 import fs from "fs/promises";
 import path from "path";
+import { execFile } from "child_process";
+import { promisify } from "util";
 import pdf from "pdf-parse";
 import { ExtractedQuestion, OptionKey } from "@/core/entities/question.entity";
 import { PaperSummary } from "@/core/entities/paper.entity";
 import { ParserError } from "@/lib/errors";
 import { sanitizeSlug } from "@/lib/utils";
+
+const execFileAsync = promisify(execFile);
 
 export interface ParseResult {
   paperSummary: Omit<
@@ -103,10 +107,14 @@ export class PDFParserService {
     try {
       const buffer = await fs.readFile(filePath);
       const pdfData = await pdf(buffer);
-      const text = pdfData.text;
+      let text = pdfData.text;
 
       if (!text || text.trim().length === 0) {
-        throw new Error("Extracted PDF text is empty. File may be an unsupported image scan.");
+        text = await this.extractTextViaWindowsOcr(filePath);
+      }
+
+      if (!text || text.trim().length === 0) {
+        throw new Error("Extracted PDF text is empty even after OCR fallback.");
       }
 
       // Detect document archetype: Structured Mock Exam vs Banking Notes / Compendium
@@ -127,6 +135,20 @@ export class PDFParserService {
         timestamp: new Date().toISOString(),
         details: { filePath, fileName },
       });
+    }
+  }
+
+  private async extractTextViaWindowsOcr(filePath: string): Promise<string> {
+    try {
+      const scriptPath = path.resolve(process.cwd(), "scripts/ocr-pdf.ps1");
+      const { stdout } = await execFileAsync(
+        "powershell",
+        ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", scriptPath, "-PdfPath", filePath],
+        { maxBuffer: 10 * 1024 * 1024 }
+      );
+      return stdout || "";
+    } catch {
+      return "";
     }
   }
 
