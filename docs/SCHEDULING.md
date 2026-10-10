@@ -1,12 +1,16 @@
 # Automated Scheduling & Windows Startup Guide
 
 ## 1. Overview
-The **Daily Q&A Banking Platform** provides automated dispatch of weekly performance reports exclusively to:
+The **Daily Q&A Banking Platform** provides automated dispatch of comprehensive two-tier performance reports (covering **Last Week's Metrics** and **Overall / All-Time Cumulative Progress**) exclusively to:
 - `addytiwari3@gmail.com`
 - `tiwariashwani5534@gmail.com`
 
-**Schedule:** Every Sunday at 08:00 AM (`SUN 08:00`).  
+**Schedule:** Every Sunday at 08:00 AM IST (`SUN 08:00`).  
 **Cron Expression:** `0 8 * * 0`
+**Content:** 
+1. **Last Week's Progress Snapshot:** Quizzes taken in past 7 days, weekly accuracy, penalty marks, questions practiced, and paper-by-paper activity.
+2. **Overall Cumulative Performance:** Total all-time quizzes taken, total questions practiced, all-time best net score, cumulative average accuracy, and total papers completed.
+
 
 ---
 
@@ -21,9 +25,14 @@ powershell -ExecutionPolicy Bypass -File scripts\schedule-sunday-8am.ps1
 Or double-click `scripts\schedule-sunday-8am.bat`.
 
 ### Command Details
-The task is registered via Windows Task Scheduler (`schtasks.exe`):
+The task can be registered dynamically via the included PowerShell script (which automatically resolves your current repository directory) or using `schtasks.exe`:
+```powershell
+# Recommended: Automatically detects your project path
+powershell -ExecutionPolicy Bypass -File .\scripts\schedule-sunday-8am.ps1
+```
+Or directly via `schtasks`:
 ```cmd
-schtasks /create /tn "DailyQandA_WeeklyReport_Sunday8AM" /tr "node c:\Users\Admin\Desktop\Projects\ashu\dailyQandA_banking\scripts\send-weekly-report.js" /sc WEEKLY /d SUN /st 08:00 /f
+schtasks /create /tn "DailyQandA_WeeklyReport_Sunday8AM" /tr "node \"%CD%\scripts\send-weekly-report.js\"" /sc WEEKLY /d SUN /st 08:00 /f
 ```
 
 ### Checking Task Status

@@ -66,10 +66,13 @@ export interface RevisionSession {
 
 | Method | Route | Description |
 |---|---|---|
+| `GET` | `/api/health` | Returns server health, uptime, storage provider status, and total paper count |
 | `GET` | `/api/papers` | Returns list of all processed papers with summary metrics |
 | `GET` | `/api/papers/[paperId]` | Returns individual paper questions and attempt history |
 | `POST` | `/api/parser/scan` | Scans `local_storage/inputs/` and processes newly added PDFs |
 | `POST` | `/api/quiz/submit` | Evaluates submitted quiz answers, records score, updates storage |
+| `GET` | `/api/revisions` | Returns list of all recorded revision sessions |
 | `POST` | `/api/revision/generate` | Pools and randomizes questions from multi-selected PDFs |
 | `POST` | `/api/revision/submit` | Records completed revision drill session |
-| `POST` | `/api/reports/dispatch-gmail` | Generates weekly report and dispatches via Gmail API (or mock) |
+| `POST` | `/api/reports/dispatch-gmail` | Generates weekly report and dispatches via Gmail/SMTP (or mock) |
+

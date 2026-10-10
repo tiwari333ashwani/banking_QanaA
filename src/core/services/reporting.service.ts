@@ -100,7 +100,7 @@ export class ReportingService {
             </div>
 
             <!-- Paper Activity Table -->
-            <h3 style="margin: 28px 0 12px 0; font-size: 16px; color: #0f172a;">Paper-by-Paper Activity</h3>
+            <h3 style="margin: 28px 0 12px 0; font-size: 16px; color: #0f172a;">Paper-by-Paper Activity (This Week)</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
               <thead>
                 <tr style="background: #f1f5f9; text-align: left; color: #475569;">
@@ -113,6 +113,40 @@ export class ReportingService {
                 ${paperRows || '<tr><td colspan="3" style="padding: 16px; text-align: center; color: #94a3b8;">No paper attempts recorded this week.</td></tr>'}
               </tbody>
             </table>
+
+            <!-- Overall Cumulative Preparation Progress -->
+            ${
+              metrics.overallMetrics
+                ? `
+            <div style="margin-top: 28px; padding: 20px; background: #f0fdf4; border-radius: 10px; border: 1px solid #bbf7d0;">
+              <div style="font-size: 12px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">
+                🏆 Overall Cumulative Preparation Progress
+              </div>
+              <table style="width: 100%; border-collapse: separate; border-spacing: 8px 0;">
+                <tr>
+                  <td style="background: #ffffff; border: 1px solid #dcfce7; border-radius: 6px; padding: 12px; text-align: center;">
+                    <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Total Quizzes</div>
+                    <div style="font-size: 20px; font-weight: 800; color: #15803d; margin-top: 2px;">${metrics.overallMetrics.totalQuizzesTaken}</div>
+                  </td>
+                  <td style="background: #ffffff; border: 1px solid #dcfce7; border-radius: 6px; padding: 12px; text-align: center;">
+                    <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Best Net Score</div>
+                    <div style="font-size: 20px; font-weight: 800; color: #0284c7; margin-top: 2px;">${metrics.overallMetrics.bestNetScore.toFixed(2)}</div>
+                  </td>
+                  <td style="background: #ffffff; border: 1px solid #dcfce7; border-radius: 6px; padding: 12px; text-align: center;">
+                    <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Overall Accuracy</div>
+                    <div style="font-size: 20px; font-weight: 800; color: #2563eb; margin-top: 2px;">${metrics.overallMetrics.averageAccuracy}%</div>
+                  </td>
+                </tr>
+              </table>
+              <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #bbf7d0; font-size: 13px; color: #1e3a5f;">
+                <div>Questions Practiced (All-Time): <strong>${metrics.overallMetrics.totalQuestionsPracticed}</strong></div>
+                <div style="margin-top: 4px;">Revision Drills Completed: <strong>${metrics.overallMetrics.totalRevisionSessions}</strong></div>
+                <div style="margin-top: 4px;">Question Papers Available: <strong>${metrics.overallMetrics.totalPapersAvailable}</strong></div>
+              </div>
+            </div>
+            `
+                : ""
+            }
 
             <!-- Call to Action -->
             <div style="margin-top: 32px; text-align: center; padding-top: 20px; border-top: 1px solid #e2e8f0;">

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.4] - 2026-10-10
+
+### Changed & Documentation
+- **Comprehensive Documentation Overhaul:**
+  - Standardized all internal file references and documentation links to relative paths, eliminating machine-specific paths across `README.md`, `docs/SCHEDULING.md`, and `docs/DEVELOPMENT.md`.
+  - Added multi-laptop developer onboarding and migration guide to `docs/DEVELOPMENT.md`, covering Python venv reconstitution and PowerShell execution policy workarounds.
+  - Updated `docs/GMAIL_SETUP.md` with dual-method email setup: Method 1 (Direct Gmail SMTP with Google App Password) and Method 2 (Google Cloud OAuth2 Gmail API v3).
+  - Synchronized `docs/API_CONTRACTS.md` to document all active server routes, including `GET /api/health` and `GET /api/revisions`.
+  - Updated `docs/ARCHITECTURE.md` to Version 2.3.4, incorporating `NodemailerSmtp` into the hexagonal adapter model.
+- **Storage Reset Standard:**
+  - Standardized the clean slate data reset procedure for clearing historical attempts, revision sessions, and logs while preserving `.gitkeep` placeholders.
+
 ## [2.3.3] - 2026-10-10
 
 ### Added

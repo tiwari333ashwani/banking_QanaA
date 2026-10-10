@@ -252,15 +252,17 @@ export class LocalStorageAdapter implements IStorageProvider {
   public async compileWeeklyMetrics(startDate: Date, endDate: Date): Promise<WeeklyPerformanceMetrics> {
     try {
       const papers = await this.listPapers();
-      const allAttempts: TimedQuizAttempt[] = [];
+      const lifetimeAttempts: TimedQuizAttempt[] = [];
+      const weeklyAttempts: TimedQuizAttempt[] = [];
 
       for (const paper of papers) {
         const attempts = await this.getPaperAttempts(paper.id);
+        lifetimeAttempts.push(...attempts);
         const filtered = attempts.filter((a) => {
           const t = new Date(a.timestamp).getTime();
           return t >= startDate.getTime() && t <= endDate.getTime();
         });
-        allAttempts.push(...filtered);
+        weeklyAttempts.push(...filtered);
       }
 
       const allRevisions = await this.listRevisionSessions();
@@ -269,25 +271,25 @@ export class LocalStorageAdapter implements IStorageProvider {
         return t >= startDate.getTime() && t <= endDate.getTime();
       });
 
-      const totalQuizzesTaken = allAttempts.length;
+      const totalQuizzesTaken = weeklyAttempts.length;
       const totalRevisionSessions = filteredRevisions.length;
       const totalQuestionsPracticed =
-        allAttempts.reduce((acc, a) => acc + a.attemptedCount, 0) +
+        weeklyAttempts.reduce((acc, a) => acc + a.attemptedCount, 0) +
         filteredRevisions.reduce((acc, r) => acc + r.totalQuestions, 0);
 
-      const netScoreSum = allAttempts.reduce((acc, a) => acc + a.netScore, 0);
+      const netScoreSum = weeklyAttempts.reduce((acc, a) => acc + a.netScore, 0);
       const averageQuizNetScore = totalQuizzesTaken > 0 ? parseFloat((netScoreSum / totalQuizzesTaken).toFixed(2)) : 0;
 
       const accuracySum =
-        allAttempts.reduce((acc, a) => acc + a.accuracyPercentage, 0) +
+        weeklyAttempts.reduce((acc, a) => acc + a.accuracyPercentage, 0) +
         filteredRevisions.reduce((acc, r) => acc + r.accuracyPercentage, 0);
       const totalSessions = totalQuizzesTaken + totalRevisionSessions;
       const averageAccuracy = totalSessions > 0 ? parseFloat((accuracySum / totalSessions).toFixed(1)) : 0;
 
-      const totalNegativeMarksIncurred = allAttempts.reduce((acc, a) => acc + a.negativePenalty, 0);
+      const totalNegativeMarksIncurred = weeklyAttempts.reduce((acc, a) => acc + a.negativePenalty, 0);
 
       const paperBreakdown = papers.map((p) => {
-        const weekAttempts = allAttempts.filter((a) => a.paperId === p.id);
+        const weekAttempts = weeklyAttempts.filter((a) => a.paperId === p.id);
         const best = weekAttempts.length > 0 ? Math.max(...weekAttempts.map((a) => a.netScore)) : 0;
         return {
           paperTitle: p.title,
@@ -295,6 +297,21 @@ export class LocalStorageAdapter implements IStorageProvider {
           bestScore: best,
         };
       });
+
+      // Overall cumulative calculations
+      const overallQuizzesTaken = lifetimeAttempts.length;
+      const overallRevisionSessions = allRevisions.length;
+      const overallQuestionsPracticed =
+        lifetimeAttempts.reduce((acc, a) => acc + a.attemptedCount, 0) +
+        allRevisions.reduce((acc, r) => acc + r.totalQuestions, 0);
+      const overallBestNetScore =
+        lifetimeAttempts.length > 0 ? Math.max(...lifetimeAttempts.map((a) => a.netScore)) : 0;
+      const overallTotalSessions = overallQuizzesTaken + overallRevisionSessions;
+      const overallAccuracySum =
+        lifetimeAttempts.reduce((acc, a) => acc + a.accuracyPercentage, 0) +
+        allRevisions.reduce((acc, r) => acc + r.accuracyPercentage, 0);
+      const overallAverageAccuracy =
+        overallTotalSessions > 0 ? parseFloat((overallAccuracySum / overallTotalSessions).toFixed(1)) : 0;
 
       return {
         weekLabel: `Week of ${startDate.toLocaleDateString("en-IN", { month: "short", day: "2-digit" })}`,
@@ -309,6 +326,14 @@ export class LocalStorageAdapter implements IStorageProvider {
         strongestSection: "Reasoning Ability",
         weakestSection: "Quantitative Aptitude",
         paperBreakdown,
+        overallMetrics: {
+          totalQuizzesTaken: overallQuizzesTaken,
+          totalRevisionSessions: overallRevisionSessions,
+          totalQuestionsPracticed: overallQuestionsPracticed,
+          bestNetScore: overallBestNetScore,
+          averageAccuracy: overallAverageAccuracy,
+          totalPapersAvailable: papers.length,
+        },
         generatedAt: new Date().toISOString(),
       };
     } catch (err: unknown) {

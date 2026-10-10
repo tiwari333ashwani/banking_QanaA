@@ -26,9 +26,13 @@ if (-not (Test-Path $SourceBat)) {
 }
 
 Write-Host "[INFO] Windows Startup Folder: $StartupDir" -ForegroundColor Gray
-Write-Host "[INFO] Copying '$SourceBat' to '$DestBat'..." -ForegroundColor Gray
+Write-Host "[INFO] Installing configured launcher to '$DestBat'..." -ForegroundColor Gray
 
-Copy-Item -Path $SourceBat -Destination $DestBat -Force
+$Content = Get-Content $SourceBat -Raw
+$NormalizedScriptDir = $ScriptDir.TrimEnd('\') + '\'
+$UpdatedContent = $Content -replace 'set SCRIPT_DIR=.*', "set SCRIPT_DIR=$NormalizedScriptDir"
+Set-Content -Path $DestBat -Value $UpdatedContent -Force
+
 
 if (Test-Path $DestBat) {
     Write-Host ""

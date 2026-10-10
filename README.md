@@ -46,27 +46,33 @@ dailyQandA_banking/
 ## Quickstart
 
 ### Prerequisites
-- Node.js `v18+` or `v24+`
-- Python `3.10+` (optional for high-throughput PDF tokenization)
+- Node.js `v18+` or `v24+ LTS`
+- Python `3.10+` or `3.13+` (for high-throughput PDF tokenization and extraction)
 
-### Installation
+### Installation & First Run
 ```bash
-# Install dependencies
+# 1. Initialize Python virtual environment
+python -m venv venv
+.\venv\Scripts\pip install -r requirements.txt
+
+# 2. Install Node.js dependencies
 npm install
 
-# Start local development server
+# 3. Start local development server
 npm run dev
 ```
 
 Open `http://localhost:3000` in your browser.
 
+> **Tip for Windows PowerShell:** If running scripts is restricted, use `npm.cmd` or run `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`.
+
 ---
 
 ## Documentation
 
-- [System Architecture](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/ARCHITECTURE.md)
-- [Local Development Guide](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/DEVELOPMENT.md)
-- [Automated Scheduling & Windows Startup](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/SCHEDULING.md)
-- [Gmail API Integration Setup](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/GMAIL_SETUP.md)
-- [API Contracts & Schemas](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/docs/API_CONTRACTS.md)
-- [Changelog](file:///c:/Users/Admin/Desktop/Projects/ashu/dailyQandA_banking/CHANGELOG.md)
+- [System Architecture](docs/ARCHITECTURE.md)
+- [Local Development & Operation Guide](docs/DEVELOPMENT.md)
+- [Automated Scheduling & Windows Startup](docs/SCHEDULING.md)
+- [Email Dispatch & Gmail Setup](docs/GMAIL_SETUP.md)
+- [API Contracts & Schemas](docs/API_CONTRACTS.md)
+- [Changelog](CHANGELOG.md)

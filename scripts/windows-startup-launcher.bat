@@ -3,7 +3,7 @@
 :: Placed in shell:startup (%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup)
 :: Ensures Sunday 8 AM scheduled task is registered and active upon Windows user login.
 
-set SCRIPT_DIR=c:\Users\Admin\Desktop\Projects\ashu\dailyQandA_banking\scripts\
+set SCRIPT_DIR=E:\AntiGravity-Projects\dailyQandA_banking\scripts\
 
 :: 1. Ensure the Sunday 8 AM scheduled task is registered in Windows Task Scheduler
 schtasks /query /tn "DailyQandA_WeeklyReport_Sunday8AM" >nul 2>&1

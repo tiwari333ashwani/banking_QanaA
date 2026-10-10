@@ -25,11 +25,19 @@ if (-not (Test-Path $TargetScript)) {
 }
 
 $NodeCmd = Get-Command node -ErrorAction SilentlyContinue
-if ($NodeCmd) {
+if ($NodeCmd -and $NodeCmd.Source -and (Test-Path $NodeCmd.Source)) {
     $NodePath = $NodeCmd.Source
+} elseif (Test-Path "C:\Program Files\nodejs\node.exe") {
+    $NodePath = "C:\Program Files\nodejs\node.exe"
 } else {
-    $NodePath = "node.exe"
+    $WingetNode = Get-ChildItem -Path "$env:LOCALAPPDATA\Microsoft\WinGet\Packages" -Filter "node.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+    if ($WingetNode -and (Test-Path $WingetNode)) {
+        $NodePath = $WingetNode
+    } else {
+        $NodePath = "node.exe"
+    }
 }
+Write-Host "[INFO] Node.js executable: $NodePath" -ForegroundColor Gray
 
 $Action = New-ScheduledTaskAction -Execute $NodePath -Argument "`"$TargetScript`"" -WorkingDirectory $ScriptDir
 $Trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 8:00AM

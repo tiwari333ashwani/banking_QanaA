@@ -1,3 +1,12 @@
+export interface OverallCumulativeMetrics {
+  totalQuizzesTaken: number;
+  totalRevisionSessions: number;
+  totalQuestionsPracticed: number;
+  bestNetScore: number;
+  averageAccuracy: number;
+  totalPapersAvailable: number;
+}
+
 export interface WeeklyPerformanceMetrics {
   weekLabel: string;
   startDate: string;
@@ -15,5 +24,7 @@ export interface WeeklyPerformanceMetrics {
     attemptsThisWeek: number;
     bestScore: number;
   }[];
+  overallMetrics?: OverallCumulativeMetrics;
   generatedAt: string;
 }
+

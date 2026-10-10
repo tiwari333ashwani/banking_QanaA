@@ -1,7 +1,7 @@
 # System Architecture & Technical Specifications
 
 **Project:** Daily Q&A Banking Utility Application  
-**Version:** 2.2.0  
+**Version:** 2.3.4  
 **Pattern:** Hexagonal / Ports-and-Adapters Architecture  
 **State Strategy:** Stateless / Zero-Database / Zero-Cache (Filesystem SSOT mapping 1-to-1 to Google Drive)
 
@@ -33,10 +33,10 @@ The application is structured to ensure that business logic and UI components re
            v                                v                   v
 +-----------------------+     +-------------------+    +-----------------+
 |   STORAGE ADAPTERS    |     |  EMAIL ADAPTERS   |    | LOGGER ADAPTERS |
-| LocalStorageAdapter   |     | GmailApiAdapter   |    | FileLogger      |
-| (Active Local SSOT)   |     | MockEmailAdapter  |    | (JSONL format)  |
-| GoogleDriveAdapter    |     +-------------------+    +-----------------+
-| (Future Cloud Target) |
+| LocalStorageAdapter   |     | NodemailerSmtp    |    | FileLogger      |
+| (Active Local SSOT)   |     | GmailApiAdapter   |    | (JSONL format)  |
+| GoogleDriveAdapter    |     | MockEmailAdapter  |    +-----------------+
+| (Future Cloud Target) |     +-------------------+
 +-----------------------+
 ```
 

@@ -58,25 +58,41 @@ function appendLog(level, message, metadata = {}) {
   }
 }
 
-// 3. Compile Weekly Metrics directly from local_storage
+// 3. Compile Weekly & Overall Metrics directly from local_storage
 function compileLocalWeeklyMetrics() {
   const now = new Date();
   const past7Days = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  const papersDir = path.join(STORAGE_ROOT, "extracted_papers");
+  // Read papers from local_storage/processed (and legacy fallback extracted_papers)
   let papers = [];
-  if (fs.existsSync(papersDir)) {
-    const files = fs.readdirSync(papersDir).filter((f) => f.endsWith(".json"));
+  const processedDir = path.join(STORAGE_ROOT, "processed");
+  if (fs.existsSync(processedDir)) {
+    const folders = fs.readdirSync(processedDir);
+    for (const folder of folders) {
+      const metaPath = path.join(processedDir, folder, "metadata.json");
+      if (fs.existsSync(metaPath)) {
+        try {
+          const raw = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
+          papers.push(raw);
+        } catch {}
+      }
+    }
+  }
+
+  const legacyPapersDir = path.join(STORAGE_ROOT, "extracted_papers");
+  if (papers.length === 0 && fs.existsSync(legacyPapersDir)) {
+    const files = fs.readdirSync(legacyPapersDir).filter((f) => f.endsWith(".json"));
     for (const f of files) {
       try {
-        const raw = JSON.parse(fs.readFileSync(path.join(papersDir, f), "utf-8"));
+        const raw = JSON.parse(fs.readFileSync(path.join(legacyPapersDir, f), "utf-8"));
         papers.push(raw);
       } catch {}
     }
   }
 
   const attemptsDir = path.join(STORAGE_ROOT, "attempts", "timed_quiz");
-  let allAttempts = [];
+  let allLifetimeAttempts = [];
+  let weeklyAttempts = [];
   if (fs.existsSync(attemptsDir)) {
     const paperDirs = fs.readdirSync(attemptsDir);
     for (const pDir of paperDirs) {
@@ -86,9 +102,10 @@ function compileLocalWeeklyMetrics() {
         for (const af of attFiles) {
           try {
             const att = JSON.parse(fs.readFileSync(path.join(fullPDir, af), "utf-8"));
+            allLifetimeAttempts.push(att);
             const t = new Date(att.timestamp).getTime();
             if (t >= past7Days.getTime() && t <= now.getTime()) {
-              allAttempts.push(att);
+              weeklyAttempts.push(att);
             }
           } catch {}
         }
@@ -97,41 +114,44 @@ function compileLocalWeeklyMetrics() {
   }
 
   const revisionsDir = path.join(STORAGE_ROOT, "attempts", "revision_sessions");
-  let allRevisions = [];
+  let allLifetimeRevisions = [];
+  let weeklyRevisions = [];
   if (fs.existsSync(revisionsDir)) {
     const revFiles = fs.readdirSync(revisionsDir).filter((f) => f.endsWith(".json"));
     for (const rf of revFiles) {
       try {
         const rev = JSON.parse(fs.readFileSync(path.join(revisionsDir, rf), "utf-8"));
+        allLifetimeRevisions.push(rev);
         const t = new Date(rev.timestamp).getTime();
         if (t >= past7Days.getTime() && t <= now.getTime()) {
-          allRevisions.push(rev);
+          weeklyRevisions.push(rev);
         }
       } catch {}
     }
   }
 
-  const totalQuizzesTaken = allAttempts.length;
-  const totalRevisionSessions = allRevisions.length;
+  // Last Week Metrics
+  const totalQuizzesTaken = weeklyAttempts.length;
+  const totalRevisionSessions = weeklyRevisions.length;
   const totalQuestionsPracticed =
-    allAttempts.reduce((acc, a) => acc + (a.attemptedCount || 0), 0) +
-    allRevisions.reduce((acc, r) => acc + (r.totalQuestions || 0), 0);
+    weeklyAttempts.reduce((acc, a) => acc + (a.attemptedCount || 0), 0) +
+    weeklyRevisions.reduce((acc, r) => acc + (r.totalQuestions || 0), 0);
 
-  const netScoreSum = allAttempts.reduce((acc, a) => acc + (a.netScore || 0), 0);
+  const netScoreSum = weeklyAttempts.reduce((acc, a) => acc + (a.netScore || 0), 0);
   const averageQuizNetScore =
     totalQuizzesTaken > 0 ? parseFloat((netScoreSum / totalQuizzesTaken).toFixed(2)) : 0;
 
   const accuracySum =
-    allAttempts.reduce((acc, a) => acc + (a.accuracyPercentage || 0), 0) +
-    allRevisions.reduce((acc, r) => acc + (r.accuracyPercentage || 0), 0);
+    weeklyAttempts.reduce((acc, a) => acc + (a.accuracyPercentage || 0), 0) +
+    weeklyRevisions.reduce((acc, r) => acc + (r.accuracyPercentage || 0), 0);
   const totalSessions = totalQuizzesTaken + totalRevisionSessions;
   const averageAccuracy =
     totalSessions > 0 ? parseFloat((accuracySum / totalSessions).toFixed(1)) : 0;
 
-  const totalNegativeMarksIncurred = allAttempts.reduce((acc, a) => acc + (a.negativePenalty || 0), 0);
+  const totalNegativeMarksIncurred = weeklyAttempts.reduce((acc, a) => acc + (a.negativePenalty || 0), 0);
 
   const paperBreakdown = papers.map((p) => {
-    const weekAttempts = allAttempts.filter((a) => a.paperId === p.id);
+    const weekAttempts = weeklyAttempts.filter((a) => a.paperId === p.id);
     const best = weekAttempts.length > 0 ? Math.max(...weekAttempts.map((a) => a.netScore || 0)) : 0;
     return {
       paperTitle: p.title || p.id,
@@ -139,6 +159,21 @@ function compileLocalWeeklyMetrics() {
       bestScore: best,
     };
   });
+
+  // Overall Cumulative All-Time Metrics
+  const overallQuizzesTaken = allLifetimeAttempts.length;
+  const overallRevisionSessions = allLifetimeRevisions.length;
+  const overallQuestionsPracticed =
+    allLifetimeAttempts.reduce((acc, a) => acc + (a.attemptedCount || 0), 0) +
+    allLifetimeRevisions.reduce((acc, r) => acc + (r.totalQuestions || 0), 0);
+  const overallBestNetScore =
+    allLifetimeAttempts.length > 0 ? Math.max(...allLifetimeAttempts.map((a) => a.netScore || 0)) : 0;
+  const overallTotalSessions = overallQuizzesTaken + overallRevisionSessions;
+  const overallAccuracySum =
+    allLifetimeAttempts.reduce((acc, a) => acc + (a.accuracyPercentage || 0), 0) +
+    allLifetimeRevisions.reduce((acc, r) => acc + (r.accuracyPercentage || 0), 0);
+  const overallAverageAccuracy =
+    overallTotalSessions > 0 ? parseFloat((overallAccuracySum / overallTotalSessions).toFixed(1)) : 0;
 
   return {
     weekLabel: `Week of ${past7Days.toLocaleDateString("en-IN", { month: "short", day: "2-digit" })} - ${now.toLocaleDateString("en-IN", { month: "short", day: "2-digit" })}`,
@@ -153,6 +188,14 @@ function compileLocalWeeklyMetrics() {
     strongestSection: "Reasoning Ability",
     weakestSection: "Quantitative Aptitude",
     paperBreakdown,
+    overallMetrics: {
+      totalQuizzesTaken: overallQuizzesTaken,
+      totalRevisionSessions: overallRevisionSessions,
+      totalQuestionsPracticed: overallQuestionsPracticed,
+      bestNetScore: overallBestNetScore,
+      averageAccuracy: overallAverageAccuracy,
+      totalPapersAvailable: papers.length,
+    },
     generatedAt: new Date().toISOString(),
   };
 }
@@ -186,47 +229,46 @@ function generateReportHtml(metrics) {
           <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.85; margin-bottom: 6px;">
             Daily Q&A Banking Platform
           </div>
-          <h1 style="margin: 0; font-size: 24px; font-weight: 700;">Weekly Performance Summary</h1>
-          <p style="margin: 8px 0 0 0; opacity: 0.9; font-size: 14px;">${metrics.weekLabel} • Automated Sunday Digest</p>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 700;">Weekly & Overall Performance Report</h1>
+          <p style="margin: 8px 0 0 0; opacity: 0.9; font-size: 14px;">${metrics.weekLabel} • Automated Sunday 8:00 AM IST Digest</p>
         </div>
 
-        <!-- KPI Cards Grid -->
+        <!-- Section 1: Last Week KPI Cards Grid -->
         <div style="padding: 24px; background: #ffffff;">
+          <div style="font-size: 13px; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">
+            📅 Last Week's Snapshot (Past 7 Days)
+          </div>
           <table style="width: 100%; border-collapse: separate; border-spacing: 12px 0;">
             <tr>
               <td style="width: 33%; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; text-align: center;">
-                <div style="font-size: 11px; font-weight: 600; color: #166534; text-transform: uppercase;">Quizzes Taken</div>
+                <div style="font-size: 11px; font-weight: 600; color: #166534; text-transform: uppercase;">Quizzes (Week)</div>
                 <div style="font-size: 24px; font-weight: 800; color: #15803d; margin-top: 4px;">${metrics.totalQuizzesTaken}</div>
               </td>
               <td style="width: 33%; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px; text-align: center;">
-                <div style="font-size: 11px; font-weight: 600; color: #1e40af; text-transform: uppercase;">Avg Accuracy</div>
+                <div style="font-size: 11px; font-weight: 600; color: #1e40af; text-transform: uppercase;">Accuracy (Week)</div>
                 <div style="font-size: 24px; font-weight: 800; color: #2563eb; margin-top: 4px;">${metrics.averageAccuracy}%</div>
               </td>
               <td style="width: 33%; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; text-align: center;">
-                <div style="font-size: 11px; font-weight: 600; color: #991b1b; text-transform: uppercase;">Negative Penalty</div>
+                <div style="font-size: 11px; font-weight: 600; color: #991b1b; text-transform: uppercase;">Penalty (Week)</div>
                 <div style="font-size: 24px; font-weight: 800; color: #dc2626; margin-top: 4px;">-${metrics.totalNegativeMarksIncurred}</div>
               </td>
             </tr>
           </table>
 
-          <!-- Secondary Metrics -->
-          <div style="margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 14px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-              <span style="color: #64748b;">Questions Practiced (Total):</span>
+          <!-- Secondary Weekly Metrics -->
+          <div style="margin-top: 16px; padding: 14px 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span style="color: #64748b;">Questions Practiced (This Week):</span>
               <strong style="color: #0f172a;">${metrics.totalQuestionsPracticed}</strong>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-              <span style="color: #64748b;">Random Revision Drills:</span>
-              <strong style="color: #0f172a;">${metrics.totalRevisionSessions} sessions</strong>
-            </div>
             <div style="display: flex; justify-content: space-between;">
-              <span style="color: #64748b;">Strongest Section:</span>
-              <strong style="color: #059669;">${metrics.strongestSection}</strong>
+              <span style="color: #64748b;">Revision Drills (This Week):</span>
+              <strong style="color: #0f172a;">${metrics.totalRevisionSessions} sessions</strong>
             </div>
           </div>
 
           <!-- Paper Activity Table -->
-          <h3 style="margin: 28px 0 12px 0; font-size: 16px; color: #0f172a;">Paper-by-Paper Activity</h3>
+          <h3 style="margin: 24px 0 10px 0; font-size: 15px; color: #0f172a;">Weekly Paper-by-Paper Activity</h3>
           <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
             <thead>
               <tr style="background: #f1f5f9; text-align: left; color: #475569;">
@@ -236,14 +278,48 @@ function generateReportHtml(metrics) {
               </tr>
             </thead>
             <tbody>
-              ${paperRows || '<tr><td colspan="3" style="padding: 16px; text-align: center; color: #94a3b8;">No paper attempts recorded this week.</td></tr>'}
+              ${paperRows || '<tr><td colspan="3" style="padding: 14px; text-align: center; color: #94a3b8;">No paper attempts recorded this week.</td></tr>'}
             </tbody>
           </table>
 
+          <!-- Section 2: Overall Cumulative Progress -->
+          ${
+            metrics.overallMetrics
+              ? `
+          <div style="margin-top: 28px; padding: 20px; background: #f0fdf4; border-radius: 10px; border: 1px solid #bbf7d0;">
+            <div style="font-size: 12px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">
+              🏆 Overall Cumulative Preparation Progress (All-Time)
+            </div>
+            <table style="width: 100%; border-collapse: separate; border-spacing: 8px 0;">
+              <tr>
+                <td style="background: #ffffff; border: 1px solid #dcfce7; border-radius: 6px; padding: 12px; text-align: center;">
+                  <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Total Quizzes</div>
+                  <div style="font-size: 20px; font-weight: 800; color: #15803d; margin-top: 2px;">${metrics.overallMetrics.totalQuizzesTaken}</div>
+                </td>
+                <td style="background: #ffffff; border: 1px solid #dcfce7; border-radius: 6px; padding: 12px; text-align: center;">
+                  <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Best Net Score</div>
+                  <div style="font-size: 20px; font-weight: 800; color: #0284c7; margin-top: 2px;">${metrics.overallMetrics.bestNetScore.toFixed(2)}</div>
+                </td>
+                <td style="background: #ffffff; border: 1px solid #dcfce7; border-radius: 6px; padding: 12px; text-align: center;">
+                  <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Overall Accuracy</div>
+                  <div style="font-size: 20px; font-weight: 800; color: #2563eb; margin-top: 2px;">${metrics.overallMetrics.averageAccuracy}%</div>
+                </td>
+              </tr>
+            </table>
+            <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #bbf7d0; font-size: 13px; color: #1e3a5f;">
+              <div>Questions Practiced (All-Time): <strong>${metrics.overallMetrics.totalQuestionsPracticed}</strong></div>
+              <div style="margin-top: 4px;">Revision Drills Completed: <strong>${metrics.overallMetrics.totalRevisionSessions}</strong></div>
+              <div style="margin-top: 4px;">Question Papers Available: <strong>${metrics.overallMetrics.totalPapersAvailable}</strong></div>
+            </div>
+          </div>
+          `
+              : ""
+          }
+
           <!-- Call to Action -->
-          <div style="margin-top: 32px; text-align: center; padding-top: 20px; border-top: 1px solid #e2e8f0;">
-            <p style="font-size: 13px; color: #64748b; margin: 0 0 12px 0;">
-              Consistency is the key to cracking SBI PO. Jump back into your local drills!
+          <div style="margin-top: 28px; text-align: center; padding-top: 18px; border-top: 1px solid #e2e8f0;">
+            <p style="font-size: 13px; color: #64748b; margin: 0 0 10px 0;">
+              Consistency is the key to cracking SBI PO. Keep solving drills daily!
             </p>
           </div>
 
@@ -286,13 +362,29 @@ async function dispatchViaSmtp(recipients, metrics) {
   const htmlContent = generateReportHtml(metrics);
 
   const plainText = [
-    `Daily Q&A Banking Platform - Weekly Performance Report`,
+    `Daily Q&A Banking Platform - Weekly & Overall Performance Report`,
     `Period: ${metrics.weekLabel}`,
-    `Total Quizzes Taken: ${metrics.totalQuizzesTaken}`,
-    `Total Revision Sessions: ${metrics.totalRevisionSessions}`,
-    `Total Questions Practiced: ${metrics.totalQuestionsPracticed}`,
-    `Average Accuracy: ${metrics.averageAccuracy}%`,
-    `Generated: ${metrics.generatedAt}`,
+    `--------------------------------------------------`,
+    `[LAST WEEK'S METRICS (PAST 7 DAYS)]`,
+    `Quizzes Taken (Week): ${metrics.totalQuizzesTaken}`,
+    `Questions Practiced (Week): ${metrics.totalQuestionsPracticed}`,
+    `Average Accuracy (Week): ${metrics.averageAccuracy}%`,
+    `Negative Penalty (Week): -${metrics.totalNegativeMarksIncurred}`,
+    `Revision Drills (Week): ${metrics.totalRevisionSessions}`,
+    ...(metrics.overallMetrics
+      ? [
+          `--------------------------------------------------`,
+          `[OVERALL / ALL-TIME CUMULATIVE METRICS]`,
+          `Total All-Time Quizzes: ${metrics.overallMetrics.totalQuizzesTaken}`,
+          `Total All-Time Questions: ${metrics.overallMetrics.totalQuestionsPracticed}`,
+          `All-Time Best Net Score: ${metrics.overallMetrics.bestNetScore.toFixed(2)}`,
+          `Overall Cumulative Accuracy: ${metrics.overallMetrics.averageAccuracy}%`,
+          `Total Revision Drills: ${metrics.overallMetrics.totalRevisionSessions}`,
+          `Total Question Papers: ${metrics.overallMetrics.totalPapersAvailable}`,
+        ]
+      : []),
+    `--------------------------------------------------`,
+    `Generated At: ${metrics.generatedAt}`,
   ].join("\n");
 
   const reportsDir = path.join(STORAGE_ROOT, "reports", "weekly");
